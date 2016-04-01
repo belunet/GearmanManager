@@ -496,6 +496,11 @@ abstract class GearmanManager {
                     $this->log("Unable to chown log file to {$this->user}", GearmanManager::LOG_LEVEL_PROC_INFO);
                 }
             }
+            posix_setgid($user['uid']);
+            if (posix_getegid() != $user['uid']) {
+                $this->show_help("Unable to change group to {$this->user} (UID: {$user['uid']}).");
+            }
+            $this->log("Group set to {$this->user}", GearmanManager::LOG_LEVEL_PROC_INFO);
 
             posix_setuid($user['uid']);
             if (posix_geteuid() != $user['uid']) {
